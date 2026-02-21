@@ -5,6 +5,7 @@ param(
 )
 
 $SkillsRepo = "C:\Users\admor\.gemini\antigravity\playground\fractal-supernova\.agent\skills"
+$CentralAgent = "C:\Users\admor\.gemini\antigravity\playground\fractal-supernova\.agent"
 $PlaygroundDir = "C:\Users\admor\.gemini\antigravity\playground"
 
 function Show-Banner {
@@ -27,29 +28,49 @@ function Link-Skills {
         return
     }
     
-    if (Test-Path $skillsDir) {
-        $item = Get-Item $skillsDir -Force
-        if ($item.Attributes -match "ReparsePoint") {
-            Write-Host "  OK   $projectName - Ya conectado (junction)" -ForegroundColor Green
-            return
-        }
-        
-        $ts = Get-Date -Format "yyyyMMdd-HHmmss"
-        $backupDir = "${skillsDir}.bak.${ts}"
-        Write-Host "  BAK  $projectName - Respaldando skills existentes..." -ForegroundColor Yellow
-        Rename-Item $skillsDir $backupDir
-    }
-    
+    # Create .agent/ if needed
     if (-not (Test-Path $agentDir)) {
         New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
     }
     
-    try {
-        cmd /c mklink /J "$skillsDir" "$SkillsRepo" 2>&1 | Out-Null
-        Write-Host "  LINK $projectName - Skills conectadas!" -ForegroundColor Green
+    # Handle skills junction
+    $needsLink = $true
+    if (Test-Path $skillsDir) {
+        $item = Get-Item $skillsDir -Force
+        if ($item.Attributes -match "ReparsePoint") {
+            Write-Host "  OK   $projectName - Ya conectado (junction)" -ForegroundColor Green
+            $needsLink = $false
+        }
+        else {
+            $ts = Get-Date -Format "yyyyMMdd-HHmmss"
+            $backupDir = "${skillsDir}.bak.${ts}"
+            Write-Host "  BAK  $projectName - Respaldando skills existentes..." -ForegroundColor Yellow
+            Rename-Item $skillsDir $backupDir
+        }
     }
-    catch {
-        Write-Host "  ERR  $projectName - Error: $_" -ForegroundColor Red
+    
+    if ($needsLink) {
+        try {
+            cmd /c mklink /J "$skillsDir" "$SkillsRepo" 2>&1 | Out-Null
+            Write-Host "  LINK $projectName - Skills conectadas!" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "  ERR  $projectName - Error: $_" -ForegroundColor Red
+        }
+    }
+    
+    # Always copy rules.md
+    $rulesSource = Join-Path $CentralAgent "rules.md"
+    $rulesDest = Join-Path $agentDir "rules.md"
+    if (Test-Path $rulesSource) {
+        Copy-Item $rulesSource $rulesDest -Force
+    }
+    
+    # Copy workflows if they don't exist yet
+    $wfSource = Join-Path $CentralAgent "workflows"
+    $wfDest = Join-Path $agentDir "workflows"
+    if ((Test-Path $wfSource) -and -not (Test-Path $wfDest)) {
+        Copy-Item $wfSource $wfDest -Recurse -Force
     }
 }
 
