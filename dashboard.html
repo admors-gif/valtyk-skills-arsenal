@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Valtyk Skills Arsenal — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0b1a;
+      --surface: #12132a;
+      --surface-2: #1a1b3a;
+      --border: rgba(255,255,255,0.08);
+      --text: #e8e8f0;
+      --text-muted: #8888aa;
+      --primary: #667eea;
+      --primary-glow: rgba(102,126,234,0.15);
+      --green: #34d399;
+      --green-glow: rgba(52,211,153,0.15);
+      --amber: #fbbf24;
+      --amber-glow: rgba(251,191,36,0.15);
+      --rose: #f472b6;
+      --rose-glow: rgba(244,114,182,0.15);
+      --cyan: #22d3ee;
+      --cyan-glow: rgba(34,211,238,0.15);
+      --purple: #a78bfa;
+      --purple-glow: rgba(167,139,250,0.15);
+      --orange: #fb923c;
+      --orange-glow: rgba(251,146,60,0.15);
+      --radius: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 0 32px;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #a78bfa 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .last-updated {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin: 32px auto;
+      max-width: 1200px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Skills Grid */
+    .skills-section {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 40px 0 20px;
+      padding-left: 4px;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .skill-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .skill-card.cat-design::before { background: linear-gradient(90deg, var(--primary), var(--purple)); }
+    .skill-card.cat-seo::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+    .skill-card.cat-marketing::before { background: linear-gradient(90deg, var(--rose), var(--orange)); }
+    .skill-card.cat-presentations::before { background: linear-gradient(90deg, var(--amber), var(--orange)); }
+    .skill-card.cat-automation::before { background: linear-gradient(90deg, var(--cyan), var(--primary)); }
+    .skill-card.cat-business::before { background: linear-gradient(90deg, var(--purple), var(--rose)); }
+
+    .skill-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .skill-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .cat-design .skill-icon { background: var(--primary-glow); }
+    .cat-seo .skill-icon { background: var(--green-glow); }
+    .cat-marketing .skill-icon { background: var(--rose-glow); }
+    .cat-presentations .skill-icon { background: var(--amber-glow); }
+    .cat-automation .skill-icon { background: var(--cyan-glow); }
+    .cat-business .skill-icon { background: var(--purple-glow); }
+
+    .skill-name {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .skill-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .skill-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .skill-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 12px;
+    }
+    .status-active {
+      background: var(--green-glow);
+      color: var(--green);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .skill-file {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    /* Sub-skills list */
+    .sub-skills {
+      list-style: none;
+      margin: 0 0 16px;
+    }
+    .sub-skills li {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding: 4px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .sub-skills li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* Usage Log */
+    .usage-section {
+      max-width: 1200px;
+      margin: 48px auto 0;
+    }
+    .usage-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .usage-table th {
+      background: var(--surface-2);
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .usage-table td {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+    .project-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .project-tabatha { background: var(--primary-glow); color: var(--primary); }
+    .project-valtyk { background: var(--purple-glow); color: var(--purple); }
+    .project-future { background: var(--amber-glow); color: var(--amber); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 48px 0 24px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .header h1 { font-size: 1.6rem; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .stat-number { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🧠 Valtyk Skills Arsenal</h1>
+    <p>Kit de superpoderes para agencia digital — 6 skills activas, 34 sub-skills</p>
+    <div class="last-updated">Última actualización: 20 Feb 2026</div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--primary)">6</div>
+      <div class="stat-label">Skills Activas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--green)">34</div>
+      <div class="stat-label">Sub-Skills</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--amber)">11</div>
+      <div class="stat-label">Certificaciones</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--rose)">1</div>
+      <div class="stat-label">Proyectos Activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--cyan)">0</div>
+      <div class="stat-label">Completadas</div>
+    </div>
+  </div>
+
+  <!-- Skills Grid -->
+  <div class="skills-section">
+    <h2 class="section-title">📦 Skills Instaladas</h2>
+    <div class="skills-grid">
+
+      <!-- Skill 1: Web Design Premium -->
+      <div class="skill-card cat-design">
+        <div class="skill-header">
+          <div class="skill-icon">🎨</div>
+          <div class="skill-name">Web Design Premium<br><small style="font-weight:400;color:var(--text-muted)">Nivel Awwwards</small></div>
+        </div>
+        <p class="skill-desc">Animaciones GSAP, Lottie, CSS avanzado, micro-interacciones y patrones de diseño de sitios premiados.</p>
+        <ul class="sub-skills">
+          <li>GSAP ScrollTrigger & Timelines</li>
+          <li>Lottie Animations & Interactividad</li>
+          <li>Glassmorphism, Gradientes, Mesh</li>
+          <li>Hover Effects Premium</li>
+          <li>Tipografía & Escala Visual</li>
+          <li>Paletas por Industria (Salud, Legal, etc)</li>
+          <li>Checklist de Calidad Premium</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">GSAP</span>
+          <span class="tag">Lottie</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">UI/UX</span>
+          <span class="tag">Figma</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">web-design-premium/SKILL.md</span>
+        </div>
+      </div>
+
+      <!-- Skill 2: SEO Local -->
+      <div class="skill-card cat-seo">
+        <div class="skill-header">
+          <div class="skill-icon">🔍</div>
+          <div class="skill-name">SEO Local<br><small style="font-weight:400;color:var(--text-muted)">& Posicionamiento</small></div>
+        </div>
+        <p class="skill-desc">Google Business Profile, Schema Markup, Search Console, Analytics, y técnicas para negocios locales.</p>
+        <ul class="sub-skills">
+          <li>Meta Tags & On-Page SEO</li>
+          <li>Schema Markup (MedicalBusiness, FAQ)</li>
+          <li>Google Business Profile Setup</li>
+          <li>Keyword Research por Profesión</li>
+          <li>Google Search Console & Sitemap</li>
+          <li>Core Web Vitals & Performance</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">Schema</span>
+          <span class="tag">GBP</span>
+          <span class="tag">GA4</span>
+          <span class="tag">GSC</span>
+          <span class="tag">Keywords</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">seo-local/SKILL.md</span>
+        </div>
+      </div>
+
+      <!-- Skill 3: Marketing & Sales -->
+      <div class="skill-card cat-marketing">
+        <div class="skill-header">
+          <div class="skill-icon">📣</div>
+          <div class="skill-name">Marketing & Ventas<br><small style="font-weight:400;color:var(--text-muted)">Inbound</small></div>
+        </div>
+        <p class="skill-desc">Copywriting de alta conversión, email marketing, social media, y ventas consultivas para agencias.</p>
+        <ul class="sub-skills">
+          <li>Fórmulas de Copy (AIDA, PAS, BAB)</li>
+          <li>CTAs que Convierten</li>
+          <li>Email Marketing Sequences</li>
+          <li>Social Media Strategy</li>
+          <li>Sales Script para Valtyk</li>
+          <li>Manejo de Objeciones</li>
+          <li>Paquetes de Precio Sugeridos</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">Copywriting</span>
+          <span class="tag">Email</span>
+          <span class="tag">Social</span>
+          <span class="tag">Ventas</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">marketing-sales/SKILL.md</span>
+        </div>
+      </div>
+
+      <!-- Skill 4: Presentations -->
+      <div class="skill-card cat-presentations">
+        <div class="skill-header">
+          <div class="skill-icon">📊</div>
+          <div class="skill-name">Presentaciones<br><small style="font-weight:400;color:var(--text-muted)">& Propuestas Comerciales</small></div>
+        </div>
+        <p class="skill-desc">Pitch decks, propuestas PDF, contratos digitales, y reportes mensuales profesionales.</p>
+        <ul class="sub-skills">
+          <li>Pitch Deck de 12 Slides</li>
+          <li>Gamma.app / Canva / Beautiful.ai</li>
+          <li>Template de Propuesta PDF</li>
+          <li>Template de Contrato Digital</li>
+          <li>Reporte Mensual para Clientes</li>
+          <li>Checklist de Propuesta</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">Gamma</span>
+          <span class="tag">Canva</span>
+          <span class="tag">PandaDoc</span>
+          <span class="tag">PDF</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">presentations/SKILL.md</span>
+        </div>
+      </div>
+
+      <!-- Skill 5: Automation -->
+      <div class="skill-card cat-automation">
+        <div class="skill-header">
+          <div class="skill-icon">🤖</div>
+          <div class="skill-name">Automatización<br><small style="font-weight:400;color:var(--text-muted)">& Integraciones</small></div>
+        </div>
+        <p class="skill-desc">n8n workflows, Cal.com API, WhatsApp Business, email SMTP, y onboarding automatizado.</p>
+        <ul class="sub-skills">
+          <li>5 Workflows de n8n Listos</li>
+          <li>Cal.com Setup Completo</li>
+          <li>Cal.com Embed Code</li>
+          <li>WhatsApp Automation (Twilio/Meta)</li>
+          <li>SMTP Config (Gmail/Brevo/Resend)</li>
+          <li>Google OAuth para Calendar</li>
+          <li>SOP de Onboarding de Cliente</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">n8n</span>
+          <span class="tag">Cal.com</span>
+          <span class="tag">WhatsApp</span>
+          <span class="tag">SMTP</span>
+          <span class="tag">OAuth</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">automation/SKILL.md</span>
+        </div>
+      </div>
+
+      <!-- Skill 6: Business Ops -->
+      <div class="skill-card cat-business">
+        <div class="skill-header">
+          <div class="skill-icon">💼</div>
+          <div class="skill-name">Operaciones<br><small style="font-weight:400;color:var(--text-muted)">de Negocio & Escalamiento</small></div>
+        </div>
+        <p class="skill-desc">CRO, analytics avanzado, pricing strategy, dashboards, SOPs, y escalamiento de agencia.</p>
+        <ul class="sub-skills">
+          <li>Pricing Strategy con ROI</li>
+          <li>CRO — Optimización de Conversión</li>
+          <li>GA4 Event Tracking Code</li>
+          <li>Looker Studio Dashboard Template</li>
+          <li>Business Model Canvas Valtyk</li>
+          <li>SOPs de Operación</li>
+          <li>Roadmap de Ingresos</li>
+        </ul>
+        <div class="skill-tags">
+          <span class="tag">CRO</span>
+          <span class="tag">Analytics</span>
+          <span class="tag">Pricing</span>
+          <span class="tag">SOPs</span>
+        </div>
+        <div class="skill-meta">
+          <span class="skill-status status-active"><span class="status-dot"></span> Activa</span>
+          <span class="skill-file">business-ops/SKILL.md</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Usage Log -->
+  <div class="usage-section">
+    <h2 class="section-title">📋 Historial de Uso por Proyecto</h2>
+    <table class="usage-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Proyecto</th>
+          <th>Skills Utilizadas</th>
+          <th>Tarea</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>20 Feb 2026</td>
+          <td><span class="project-badge project-tabatha">Dra. Tabatha</span></td>
+          <td>🎨 Web Design · 🔍 SEO</td>
+          <td>Landing page con Schema markup</td>
+          <td style="color:var(--green)">✓ Completado</td>
+        </tr>
+        <tr>
+          <td>20 Feb 2026</td>
+          <td><span class="project-badge project-tabatha">Dra. Tabatha</span></td>
+          <td>🤖 Automation</td>
+          <td>Setup Cal.com + cuenta de usuario</td>
+          <td style="color:var(--amber)">⏳ En progreso</td>
+        </tr>
+        <tr>
+          <td>20 Feb 2026</td>
+          <td><span class="project-badge project-valtyk">Valtyk Agency</span></td>
+          <td>📣 Marketing · 💼 Business</td>
+          <td>Definir paquetes de precio y elevator pitch</td>
+          <td style="color:var(--green)">✓ Completado</td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td><span class="project-badge project-future">Próximo Cliente</span></td>
+          <td>📊 Presentaciones</td>
+          <td>Pitch deck para presentar a prospectos</td>
+          <td style="color:var(--text-muted)">📌 Pendiente</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="usage-section" style="margin-top: 48px;">
+    <h2 class="section-title">🗺️ Roadmap de Certificaciones</h2>
+    <div class="skills-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+      <div class="stat-card" style="text-align:left">
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">HubSpot Academy</div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Inbound Marketing <span style="color:var(--text-muted);font-size:0.7rem">~4h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Content Marketing <span style="color:var(--text-muted);font-size:0.7rem">~6h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Email Marketing <span style="color:var(--text-muted);font-size:0.7rem">~3h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Inbound Sales <span style="color:var(--text-muted);font-size:0.7rem">~3h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ CRM <span style="color:var(--text-muted);font-size:0.7rem">~2h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Marketing Automation <span style="color:var(--text-muted);font-size:0.7rem">~3h</span></div>
+        <div style="font-size:0.85rem">☐ Agency Partner <span style="color:var(--text-muted);font-size:0.7rem">~4h</span></div>
+      </div>
+      <div class="stat-card" style="text-align:left">
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Google Skillshop</div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Google Analytics 4 <span style="color:var(--text-muted);font-size:0.7rem">~4h</span></div>
+        <div style="font-size:0.85rem;margin-bottom:4px">☐ Google Ads Search <span style="color:var(--text-muted);font-size:0.7rem">~4h</span></div>
+        <div style="font-size:0.85rem">☐ Google Digital Marketing <span style="color:var(--text-muted);font-size:0.7rem">~8h</span></div>
+      </div>
+      <div class="stat-card" style="text-align:left">
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Otras</div>
+        <div style="font-size:0.85rem">☐ LottieFiles Certification <span style="color:var(--text-muted);font-size:0.7rem">~3h</span></div>
+      </div>
+      <div class="stat-card" style="text-align:left">
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Progreso Total</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--primary);margin:8px 0">0/11</div>
+        <div style="background:var(--surface-2);border-radius:8px;height:8px;overflow:hidden">
+          <div style="background:linear-gradient(90deg,var(--primary),var(--purple));height:100%;width:0%;border-radius:8px;transition:width 0.5s ease"></div>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px">0 de 44 horas completadas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>🧠 Valtyk Skills Arsenal v1.0 — Powered by <a href="#">Antigravity AI</a></p>
+    <p style="margin-top:4px">Portable kit: descarga todo desde <code>.agent/skills/</code></p>
+  </div>
+
+</body>
+</html>
