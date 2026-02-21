@@ -4,8 +4,8 @@ param(
     [switch]$Status
 )
 
-$SkillsRepo = "C:\Users\admor\.gemini\antigravity\playground\fractal-supernova\.agent\skills"
-$CentralAgent = "C:\Users\admor\.gemini\antigravity\playground\fractal-supernova\.agent"
+$SkillsRepo = "C:\Users\admor\valtyk-skills-arsenal"
+$CentralAgent = "C:\Users\admor\valtyk-skills-arsenal"
 $PlaygroundDir = "C:\Users\admor\.gemini\antigravity\playground"
 
 function Show-Banner {
